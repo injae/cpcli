@@ -1,0 +1,15 @@
+[package]
+   name = "cpcli"
+   version = "0.0.1"
+   description = ""
+
+[[lib]]
+   name = "cpcli"
+   type = "shared"
+   source = ["src/.*"]
+
+
+[[bin]]
+    name = "cpcli-bin"
+   source = ["test/main.cpp"]
+    

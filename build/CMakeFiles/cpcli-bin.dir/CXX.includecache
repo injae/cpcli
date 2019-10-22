@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/cpcli/define.hpp
+optional
+-
+string_view
+-
+string
+-
+array
+-
+
+../include/cpcli/value.hpp
+string_view
+-
+unordered_map
+-
+vector
+-
+algorithm
+-
+array
+-
+sstream
+-
+cpcli/define.hpp
+../include/cpcli/cpcli/define.hpp
+
+/home/nieel/dev/cpcli/test/main.cpp
+cpcli/value.hpp
+/home/nieel/dev/cpcli/test/cpcli/value.hpp
+cpcli/define.hpp
+/home/nieel/dev/cpcli/test/cpcli/define.hpp
+

@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++17 -Wall -fPIC -O0 -g  -g   CMakeFiles/cpcli-bin.dir/test/main.cpp.o  -o cpcli-bin 
