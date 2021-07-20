@@ -1,1 +1,2 @@
-/usr/bin/c++ -fPIC  -std=c++17 -Wall -fPIC -O0 -g  -g  -shared -Wl,-soname,libcpcli.so -o libcpcli.so CMakeFiles/cpcli.dir/src/value.cpp.o 
+/usr/bin/ar qc Debug/libcpcli.a CMakeFiles/cpcli.dir/src/cpcli.cpp.o
+/usr/bin/ranlib Debug/libcpcli.a

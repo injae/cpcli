@@ -1,15 +1,26 @@
 [package]
    name = "cpcli"
    version = "0.0.1"
-   description = ""
+   description = "c++ command line parser library"
 
-[[lib]]
+[lib]
    name = "cpcli"
-   type = "shared"
-   source = ["src/.*"]
+   type = "static"
+   source = ["src/.*.cpp"]
+
+[[example]]
+    name = "test"
+    source = ["example/example.cpp"]
+
+[[test]]
+    name = "parse test"
+    source = ["test/test.cpp"]
 
 
-[[bin]]
-    name = "cpcli-bin"
-   source = ["test/main.cpp"]
-    
+[dependencies]
+    serdepp="git"
+
+[dev-dependencies]
+    Catch2="2.9.1" 
+    nlohmann_json="3.9.1"
+

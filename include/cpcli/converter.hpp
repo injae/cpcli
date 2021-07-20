@@ -1,0 +1,76 @@
+#pragma once
+
+#ifndef __CPCLI_CONVERTER_HPP__
+#define __CPCLI_CONVERTER_HPP__
+
+#include <serdepp/serde.hpp>
+
+namespace cpcli {
+    struct parse_error : std::exception {
+        explicit parse_error(std::string what) : what_(fmt::format("parse error: {}\n", what)) {}
+        virtual ~parse_error() noexcept override = default;
+        virtual const char* what() const noexcept override {return what_.c_str();}
+        std::string what_;
+    };
+
+    enum class ARG_TYPE {
+        NONE,
+        BOOL,
+        INTEGER,
+        STRING,
+        FLOAT,
+        SEQUENCE,
+    };
+
+    template<typename T>
+    constexpr ARG_TYPE find_arg_type() {
+        using namespace serde;
+        if constexpr(meta::is_str_v<T>) return ARG_TYPE::STRING;
+        else if constexpr (meta::is_sequenceable_v<T>) return ARG_TYPE::SEQUENCE;
+        else if constexpr(std::is_same_v<int, T>) return ARG_TYPE::INTEGER;
+        else if constexpr(std::is_same_v<bool, T>) return ARG_TYPE::BOOL;
+        else if constexpr(std::is_same_v<float, T>) return ARG_TYPE::BOOL;
+        else throw parse_error(fmt::format("unsupport type"));
+    }
+
+    template<typename T, typename U=void> inline T converter(const std::string& str) {
+        if constexpr(serde::meta::is_sequenceable_v<T> && !serde::meta::is_str_v<T>) {
+            T seq;
+            auto last_pos = str.find_first_not_of(',', 0);
+            auto pos      = str.find_first_of(',', last_pos);
+            while (std::string::npos != pos || std::string::npos != last_pos) {
+                seq.push_back(converter<serde::type::seq_e<T>>(str.substr(last_pos, pos - last_pos)));
+                last_pos = str.find_first_not_of(',', pos);
+                pos = str.find_first_of(',', last_pos);
+            }
+            return seq;
+        } else {
+            throw parse_error(fmt::format("unsupport type"));
+        }
+    }
+
+    template<> inline bool converter(const std::string& str) {
+        using namespace fmt::literals;
+        std::string lower;
+        std::transform(str.begin(), str.end(), lower.begin(), ::tolower);
+        if(str == "off" || str == "false") return false;
+        else if(str == "on" || str == "true") return true;
+        else throw parse_error(fmt::format("str[{}] -> bool", str));
+    }
+
+    template <> inline std::string converter(const std::string& str) { return str; }
+
+    template <> inline int converter(const std::string& str) { return std::stoi(str); }
+    template <> inline float converter(const std::string& str) { return std::stof(str); }
+
+    template<typename T>
+    inline T convert(const ARG_TYPE& type, const std::string& data_str) {
+        switch(type) {
+        case ARG_TYPE::NONE: return  converter<T>(data_str.empty() ? "false" : data_str);
+        default: return converter<T>(data_str);
+        }
+    }
+
+}
+
+#endif

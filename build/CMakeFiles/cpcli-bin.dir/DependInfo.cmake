@@ -4,14 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/nieel/dev/cpcli/test/main.cpp" "/home/nieel/dev/cpcli/build/CMakeFiles/cpcli-bin.dir/test/main.cpp.o"
+  "/Users/nieel/dev/cpcli/test/main.cpp" "/Users/nieel/dev/cpcli/build/CMakeFiles/cpcli-bin.dir/test/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# Preprocessor definitions for this target.
-set(CMAKE_TARGET_DEFINITIONS_CXX
-  "SYSTEM_LINUX"
-  )
+set(CMAKE_CXX_COMPILER_ID "Clang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

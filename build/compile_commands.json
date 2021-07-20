@@ -1,12 +1,12 @@
 [
 {
-  "directory": "/home/nieel/dev/cpcli/build",
-  "command": "/usr/bin/c++  -DSYSTEM_LINUX -I/home/nieel/dev/cpcli/include -I/home/nieel/dev/cpcli/src   -std=c++17 -Wall -fPIC -O0 -g  -g -fPIE   -std=c++17 -o CMakeFiles/cpcli-bin.dir/test/main.cpp.o -c /home/nieel/dev/cpcli/test/main.cpp",
-  "file": "/home/nieel/dev/cpcli/test/main.cpp"
+  "directory": "/Users/nieel/dev/cpp/cpcli/build",
+  "command": "/usr/local/opt/llvm/bin/clang++ -DFMT_LOCALE -DJSON_USE_IMPLICIT_CONVERSIONS=1 -I/Users/nieel/dev/cpp/cpcli/include -I/Users/nieel/dev/cpp/cpcli/src -isystem /Users/nieel/.cppm/cppkg/serdepp/include -isystem /Users/nieel/.cppm/cppkg/nlohmann_json-3.9.1/include -isystem /Users/nieel/.cppm/cppkg/toml11-3.6.0/include -isystem /Users/nieel/.cppm/cppkg/nameof-0.10.0/include -isystem /Users/nieel/.cppm/cppkg/magic_enum-0.7.3/include -isystem /Users/nieel/.cppm/cppkg/FMT-7.1.3/include -isystem /Users/nieel/.cppm/cppkg/Catch2-2.9.1/include -std=c++17 -Wall -fPIC -O0  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -std=gnu++17 -o CMakeFiles/cpcli.dir/src/cpcli.cpp.o -c /Users/nieel/dev/cpp/cpcli/src/cpcli.cpp",
+  "file": "/Users/nieel/dev/cpp/cpcli/src/cpcli.cpp"
 },
 {
-  "directory": "/home/nieel/dev/cpcli/build",
-  "command": "/usr/bin/c++  -DSYSTEM_LINUX -Dcpcli_EXPORTS -I/home/nieel/dev/cpcli/include -I/home/nieel/dev/cpcli/src   -std=c++17 -Wall -fPIC -O0 -g  -g -fPIC   -std=c++17 -o CMakeFiles/cpcli.dir/src/value.cpp.o -c /home/nieel/dev/cpcli/src/value.cpp",
-  "file": "/home/nieel/dev/cpcli/src/value.cpp"
+  "directory": "/Users/nieel/dev/cpp/cpcli/build",
+  "command": "/usr/local/opt/llvm/bin/clang++ -DFMT_LOCALE -DJSON_USE_IMPLICIT_CONVERSIONS=1 -I/Users/nieel/dev/cpp/cpcli/include -I/Users/nieel/dev/cpp/cpcli/src -isystem /Users/nieel/.cppm/cppkg/serdepp/include -isystem /Users/nieel/.cppm/cppkg/nlohmann_json-3.9.1/include -isystem /Users/nieel/.cppm/cppkg/toml11-3.6.0/include -isystem /Users/nieel/.cppm/cppkg/nameof-0.10.0/include -isystem /Users/nieel/.cppm/cppkg/magic_enum-0.7.3/include -isystem /Users/nieel/.cppm/cppkg/FMT-7.1.3/include -isystem /Users/nieel/.cppm/cppkg/Catch2-2.9.1/include -std=c++17 -Wall -fPIC -O0  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -std=gnu++17 -o CMakeFiles/test.dir/example/example.cpp.o -c /Users/nieel/dev/cpp/cpcli/example/example.cpp",
+  "file": "/Users/nieel/dev/cpp/cpcli/example/example.cpp"
 }
 ]

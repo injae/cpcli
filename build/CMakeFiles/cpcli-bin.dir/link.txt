@@ -1,1 +1,1 @@
-/usr/bin/c++   -std=c++17 -Wall -fPIC -O0 -g  -g   CMakeFiles/cpcli-bin.dir/test/main.cpp.o  -o cpcli-bin 
+/usr/local/opt/llvm/bin/clang++  -std=c++17  -Wall -fPIC -O0 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/cpcli-bin.dir/test/main.cpp.o  -o Debug/cpcli-bin 

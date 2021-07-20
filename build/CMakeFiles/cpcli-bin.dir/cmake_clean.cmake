@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/cpcli-bin.dir/test/main.cpp.o"
-  "cpcli-bin"
-  "cpcli-bin.pdb"
+  "Debug/cpcli-bin"
+  "Debug/cpcli-bin.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

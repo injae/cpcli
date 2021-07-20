@@ -6,33 +6,27 @@
 
 #IncludeRegexTransform: 
 
-../include/cpcli/define.hpp
-optional
--
-string_view
+../include/cpcli/app.hpp
+memory
 -
 string
 -
-array
+queue
+-
+map
+-
+cpcli/parser.hpp
+../include/cpcli/cpcli/parser.hpp
+
+../include/cpcli/parser.hpp
+queue
+-
+string
+-
+regex
 -
 
-../include/cpcli/value.hpp
-string_view
+/Users/nieel/dev/cpcli/src/app.cpp
+cpcli/app.hpp
 -
-unordered_map
--
-vector
--
-algorithm
--
-array
--
-sstream
--
-cpcli/define.hpp
-../include/cpcli/cpcli/define.hpp
-
-/home/nieel/dev/cpcli/src/value.cpp
-cpcli/value.hpp
-/home/nieel/dev/cpcli/src/cpcli/value.hpp
 
