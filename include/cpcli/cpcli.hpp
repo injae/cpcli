@@ -63,7 +63,7 @@ namespace cpcli
         Command(const Command& other) noexcept = default;
         Command(Command&& other) noexcept = default;
         Command& parse(int argc, char* argv[]);
-        void parse(const std::string& str, std::queue<std::string>& args);
+        void parse(const std::string& str, std::deque<std::string>& args);
 
         inline Command& desc(const std::string& description) { desc_ = description; return *this; }
         Command& add_option(Option& option);
@@ -92,7 +92,7 @@ namespace cpcli
             std::map<std::string, Command> commands_;
             std::vector<Hook> hooks_;
         public:
-            std::queue<std::string> args;
+            std::deque<std::string> args;
 
         DERIVE_SERDE(Command,
                     (&Self::name_, "name")
@@ -101,7 +101,13 @@ namespace cpcli
                     (&Self::abbr_options_, "abbrs")
                     (&Self::full_options_, "fulls")
                     (&Self::commands_, "commands"))
-        };
+    };
+
+    template<typename T>
+    Command parse(const std::string& cmd="") {
+        return cmd.empty() ? serde::deserialize<cpcli::Command>(T{})
+                           : serde::deserialize<cpcli::Command>(T{}).sub_command(cmd);
+    }
 }
 
 #endif

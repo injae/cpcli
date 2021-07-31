@@ -72,11 +72,11 @@ namespace cpcli
         }
     }
 
-    void Command::parse(const std::string& str, std::queue<std::string>& args) {
+    void Command::parse(const std::string& str, std::deque<std::string>& args) {
         if(str != name_) { fmt::print(stderr, "wrong command name"); exit(1); }
         bool is_subcommand = false;
         while(!args.empty()) {
-            auto parsed_str = args.front(); args.pop();
+            auto parsed_str = args.front(); args.pop_front();
             auto key_str = parsed_str[0] == '-' && parsed_str[1] != '-' ?  2 : parsed_str.find("=");
             auto key = key_str != std::string::npos ? parsed_str.substr(0, key_str) : parsed_str;
             if(full_options_.find(key) != full_options_.end()) {
@@ -91,7 +91,7 @@ namespace cpcli
             } else {
                 if(parsed_str[0] == '-') { fmt::print(stderr, "unknown option: {}\n",parsed_str); exit(1);}
                 if(hooks_.empty() && !this->args.empty()) {fmt::print(stderr, "unparsed data\n"); exit(1);}
-                args.push(parsed_str);
+                args.push_back(parsed_str);
                 break;
             }
         }
@@ -104,7 +104,7 @@ namespace cpcli
 
 
     Command& Command::parse(int argc, char* argv[]) {
-        for(int i = 1; i < argc; ++i) { args.push(std::string{argv[i]}); }  
+        for(int i = 1; i < argc; ++i) { args.push_back(std::string{argv[i]}); }  
         parse(name_, args);
         return *this;
     }
@@ -137,7 +137,7 @@ namespace cpcli
 
     std::string Command::pop_arg() {
         if(args.empty()) throw parse_error("no remain args");
-        auto arg = args.front(); args.pop();
+        auto arg = args.front(); args.pop_front();
         return arg;
     };
 }

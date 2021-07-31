@@ -32,9 +32,7 @@ struct Test {
     std::map<std::string, std::string> m;
     void execute(cpcli::Command& cmd) {
         auto t = serde::serialize<Test>(cmd);
-        fmt::print("{}\n", serde::deserialize<nlohmann::json>(cmd).dump(4));
-        fmt::print("{}\n", serde::deserialize<nlohmann::json>(t).dump());
-        if(cmd["help"].visit()) { cmd.print_help(); }
+        if(t.help) { cmd.print_help(); }
     }
 };
 
@@ -46,11 +44,7 @@ struct App {
 
 int main(int argc, char *argv[])
 {
-    using namespace cpcli;
-    using namespace fmt::literals;
-
-    auto app = serde::deserialize<cpcli::Command>(App{});
-    app.sub_command("test").parse(argc, argv);
+    cpcli::parse<App>("test").parse(argc,argv);
     
     return 0;
 }
