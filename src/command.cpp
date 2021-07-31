@@ -1,4 +1,4 @@
-#include "cpcli/cpcli.hpp"
+#include "cpcli/command.hpp"
 
 namespace cpcli
 {

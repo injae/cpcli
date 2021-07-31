@@ -302,29 +302,29 @@ example/example.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/example/example.cpp.s
 .PHONY : example/example.cpp.s
 
-src/cpcli.o: src/cpcli.cpp.o
-.PHONY : src/cpcli.o
+src/command.o: src/command.cpp.o
+.PHONY : src/command.o
 
 # target to build an object file
-src/cpcli.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/cpcli.cpp.o
-.PHONY : src/cpcli.cpp.o
+src/command.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/command.cpp.o
+.PHONY : src/command.cpp.o
 
-src/cpcli.i: src/cpcli.cpp.i
-.PHONY : src/cpcli.i
+src/command.i: src/command.cpp.i
+.PHONY : src/command.i
 
 # target to preprocess a source file
-src/cpcli.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/cpcli.cpp.i
-.PHONY : src/cpcli.cpp.i
+src/command.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/command.cpp.i
+.PHONY : src/command.cpp.i
 
-src/cpcli.s: src/cpcli.cpp.s
-.PHONY : src/cpcli.s
+src/command.s: src/command.cpp.s
+.PHONY : src/command.s
 
 # target to generate assembly for a file
-src/cpcli.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/cpcli.cpp.s
-.PHONY : src/cpcli.cpp.s
+src/command.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cpcli.dir/build.make CMakeFiles/cpcli.dir/src/command.cpp.s
+.PHONY : src/command.cpp.s
 
 # Help Target
 help:
@@ -350,9 +350,9 @@ help:
 	@echo "... example/example.o"
 	@echo "... example/example.i"
 	@echo "... example/example.s"
-	@echo "... src/cpcli.o"
-	@echo "... src/cpcli.i"
-	@echo "... src/cpcli.s"
+	@echo "... src/command.o"
+	@echo "... src/command.i"
+	@echo "... src/command.s"
 .PHONY : help
 
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/cpcli.dir/src/cpcli.cpp.o"
-  "CMakeFiles/cpcli.dir/src/cpcli.cpp.o.d"
+  "CMakeFiles/cpcli.dir/src/command.cpp.o"
+  "CMakeFiles/cpcli.dir/src/command.cpp.o.d"
   "Debug/libcpcli.a"
   "Debug/libcpcli.pdb"
 )

@@ -1,3 +1,8 @@
+# Cpcli (Beta)
+serdepp base command line parser
+
+## Example
+```cpp
 #include "cpcli/cpcli.hpp"
 
 using namespace cpcli::attribute;
@@ -47,3 +52,38 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+```
+## Result
+```console
+> ./test -h
+Usage:
+   test <command> [--verbose]
+
+Option:
+   --help [-h]                     : help command      
+
+Command:
+   build                           :build command      
+
+❯ ./test build --help # sub command
+Usage:
+   build [--verbose]
+
+Option:
+   --Def [-D] MAP                  : CMake Option {cmake option}
+   --help [-h]                     : help command      
+   --list [-l] SEQUENCE            : list test {option list}
+
+
+❯ ./test build -DTEST=ON -DTEST2=OFF # map type args std::map<std::string, bool>
+TEST:true
+TEST2:false
+
+❯ ./test build -l=a -l=b  # list type args std::vector<std::string>
+a
+b
+
+❯ ./test build a b c # unregisted args
+a,b,c,
+```
+

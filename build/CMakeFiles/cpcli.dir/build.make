@@ -69,28 +69,28 @@ include CMakeFiles/cpcli.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/cpcli.dir/flags.make
 
-CMakeFiles/cpcli.dir/src/cpcli.cpp.o: CMakeFiles/cpcli.dir/flags.make
-CMakeFiles/cpcli.dir/src/cpcli.cpp.o: ../src/cpcli.cpp
-CMakeFiles/cpcli.dir/src/cpcli.cpp.o: CMakeFiles/cpcli.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/nieel/dev/cpp/cpcli/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/cpcli.dir/src/cpcli.cpp.o"
-	/usr/local/bin/ccache /usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/cpcli.dir/src/cpcli.cpp.o -MF CMakeFiles/cpcli.dir/src/cpcli.cpp.o.d -o CMakeFiles/cpcli.dir/src/cpcli.cpp.o -c /Users/nieel/dev/cpp/cpcli/src/cpcli.cpp
+CMakeFiles/cpcli.dir/src/command.cpp.o: CMakeFiles/cpcli.dir/flags.make
+CMakeFiles/cpcli.dir/src/command.cpp.o: ../src/command.cpp
+CMakeFiles/cpcli.dir/src/command.cpp.o: CMakeFiles/cpcli.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/nieel/dev/cpp/cpcli/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/cpcli.dir/src/command.cpp.o"
+	/usr/local/bin/ccache /usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/cpcli.dir/src/command.cpp.o -MF CMakeFiles/cpcli.dir/src/command.cpp.o.d -o CMakeFiles/cpcli.dir/src/command.cpp.o -c /Users/nieel/dev/cpp/cpcli/src/command.cpp
 
-CMakeFiles/cpcli.dir/src/cpcli.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cpcli.dir/src/cpcli.cpp.i"
-	/usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/nieel/dev/cpp/cpcli/src/cpcli.cpp > CMakeFiles/cpcli.dir/src/cpcli.cpp.i
+CMakeFiles/cpcli.dir/src/command.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/cpcli.dir/src/command.cpp.i"
+	/usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/nieel/dev/cpp/cpcli/src/command.cpp > CMakeFiles/cpcli.dir/src/command.cpp.i
 
-CMakeFiles/cpcli.dir/src/cpcli.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cpcli.dir/src/cpcli.cpp.s"
-	/usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/nieel/dev/cpp/cpcli/src/cpcli.cpp -o CMakeFiles/cpcli.dir/src/cpcli.cpp.s
+CMakeFiles/cpcli.dir/src/command.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/cpcli.dir/src/command.cpp.s"
+	/usr/local/opt/llvm/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/nieel/dev/cpp/cpcli/src/command.cpp -o CMakeFiles/cpcli.dir/src/command.cpp.s
 
 # Object files for target cpcli
 cpcli_OBJECTS = \
-"CMakeFiles/cpcli.dir/src/cpcli.cpp.o"
+"CMakeFiles/cpcli.dir/src/command.cpp.o"
 
 # External object files for target cpcli
 cpcli_EXTERNAL_OBJECTS =
 
-Debug/libcpcli.a: CMakeFiles/cpcli.dir/src/cpcli.cpp.o
+Debug/libcpcli.a: CMakeFiles/cpcli.dir/src/command.cpp.o
 Debug/libcpcli.a: CMakeFiles/cpcli.dir/build.make
 Debug/libcpcli.a: CMakeFiles/cpcli.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/nieel/dev/cpp/cpcli/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library Debug/libcpcli.a"

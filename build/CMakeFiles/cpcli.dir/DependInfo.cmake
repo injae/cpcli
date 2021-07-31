@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/nieel/dev/cpp/cpcli/src/cpcli.cpp" "CMakeFiles/cpcli.dir/src/cpcli.cpp.o" "gcc" "CMakeFiles/cpcli.dir/src/cpcli.cpp.o.d"
+  "/Users/nieel/dev/cpp/cpcli/src/command.cpp" "CMakeFiles/cpcli.dir/src/command.cpp.o" "gcc" "CMakeFiles/cpcli.dir/src/command.cpp.o.d"
   )
 
 # Targets to which this target links.

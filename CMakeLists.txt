@@ -19,7 +19,7 @@ endif()
 
 cppm_target_define(cpcli STATIC
 SOURCES
-    src/cpcli.cpp
+    src/command.cpp
 )
 
 cppm_examples_area()
