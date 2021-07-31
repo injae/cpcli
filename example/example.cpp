@@ -19,6 +19,7 @@ struct Build {
         auto t = serde::serialize<Build>(cmd);
         if(t.help) { cmd.print_help(); exit(1); }
         for(auto& [key, data] : t.define) { fmt::print("{}:{}\n",key,data); }
+        for(auto& arg : cmd.args) { fmt::print("{},",arg); }
     }
 };
 

@@ -91,7 +91,7 @@ namespace cpcli
             } else {
                 if(parsed_str[0] == '-') { fmt::print(stderr, "unknown option: {}\n",parsed_str); exit(1);}
                 if(hooks_.empty() && !this->args.empty()) {fmt::print(stderr, "unparsed data\n"); exit(1);}
-                args.push_back(parsed_str);
+                args.push_front(parsed_str);
                 break;
             }
         }
