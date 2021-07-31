@@ -26,26 +26,16 @@ namespace serde {
         }
     };
 
-    template<> struct serde_adaptor<cpcli_t, cpcli::Option, type::struct_t> {
-        static void from(cpcli_t& s, std::string_view key, cpcli::Option& data) {
-            throw serde::unimplemented_error(fmt::format("serde_adaptor<{}>::from(cpcli::Command, key data)",
-                                                         nameof::nameof_short_type<cpcli::Command>()));
-        }
-        static void into(cpcli_t& s, std::string_view key, const cpcli::Option& data) {
-            cpcli::Option opt = data;
-            s.add_option(opt);
-        }
-    };
-
     template<typename T, typename U> struct serde_adaptor<cpcli_t, T, U> {
         static void from(cpcli_t& s, std::string_view key, T& data) {
             data = s[key].get<T>();
         }
         static void into(cpcli_t& s, std::string_view key, const T& data) {
-            throw serde::unimplemented_error(fmt::format("serde_adaptor<{}>::from(cpcli::Command, key data)",
-                                                         nameof::nameof_short_type<cpcli::Command>()));
+            cpcli::Option opt = cpcli::Option(std::string{key});
+            s.add_option(opt);
         }
     };
+
 }
 
 #endif

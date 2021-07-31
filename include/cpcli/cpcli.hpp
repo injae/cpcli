@@ -33,6 +33,7 @@ namespace cpcli
             return *this;
         }
         template<typename T> inline T get() { return convert<T>(data_type, data_); }
+        std::string help_str();
 
         std::string abbr_;
         std::string name_;
@@ -56,6 +57,7 @@ namespace cpcli
 
     class Command {
     public:
+        using Hook = std::function<void(Command&)>;
         Command() = default;
         Command(const std::string& name) : name_(name) {}
         Command(const Command& other) noexcept = default;
@@ -65,6 +67,8 @@ namespace cpcli
 
         inline Command& desc(const std::string& description) { desc_ = description; return *this; }
         Command& add_option(Option& option);
+        Command& update_option(const std::string& name);
+
         Command& add_command(const std::string& name);
         Command& add_command(Command& command);
         std::string pop_arg();
@@ -73,7 +77,11 @@ namespace cpcli
         Option& operator[](const char* option_name) { return options_[std::string{option_name}]; }
         Command& sub_command(const std::string& command) { return commands_[command]; }
         inline void name(std::string_view name) { name_ = std::string{name};}
-        inline Command& hook(std::function<void(Command&)>&& func) { hooks_.push_back(std::move(func)); return *this; }
+        inline Command& hook(Hook&& func) { hooks_.push_back(std::move(func)); return *this; }
+        bool has_sub_command(const std::string& command) { return commands_.find(command) != commands_.end(); }
+        bool has_option(const std::string& option) { return options_.find(option) != options_.end(); }
+        std::string help_str();
+        void print_help();
 
         private:
             std::string name_;
@@ -82,17 +90,17 @@ namespace cpcli
             std::map<std::string, std::string> abbr_options_;
             std::map<std::string, std::string> full_options_;
             std::map<std::string, Command> commands_;
-            std::vector<std::function<void(Command&)>> hooks_;
+            std::vector<Hook> hooks_;
         public:
             std::queue<std::string> args;
 
         DERIVE_SERDE(Command,
-                        (&Self::name_, "name")
-                        (&Self::desc_, "desc")
-                        (&Self::options_, "options")
-                        (&Self::abbr_options_, "abbrs")
-                        (&Self::full_options_, "fulls")
-                        (&Self::commands_, "commands"))
+                    (&Self::name_, "name")
+                    (&Self::desc_, "desc")
+                    (&Self::options_, "options")
+                    (&Self::abbr_options_, "abbrs")
+                    (&Self::full_options_, "fulls")
+                    (&Self::commands_, "commands"))
         };
 }
 
