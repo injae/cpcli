@@ -119,6 +119,40 @@ namespace cpcli::attribute {
         }
     };
 
+    struct visible{
+        visible(bool is_visible) :is_visible_(is_visible) {};
+        bool is_visible_;
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
+        }
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                if(ctx.adaptor.has_option(std::string{key})) {
+                    ctx.adaptor[std::string{key}].visible(is_visible_);
+                    next_attr.into(ctx, data, key, remains...);
+                } else {
+                    next_attr.into(ctx, data, key, remains..., visible(is_visible_));
+                }
+            }
+            else {
+                next_attr.into(ctx, data, key, remains...);
+            }
+        }
+
+        template<typename T, typename serde_ctx>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                ctx.adaptor[std::string{key}].visible(is_visible_);
+            }
+        }
+    };
+
     struct hook{
         hook(Command::Hook&& hook) :hook_(std::move(hook)) {};
         Command::Hook&& hook_;

@@ -7,7 +7,7 @@ using namespace cpcli::attribute;
 struct Build {
     DERIVE_SERDE(Build,
                  (&Self::help,  "help",  abbr{"h"}, desc{"help command"})
-                 (&Self::hello, "hello", abbr{"H"}, desc{"hello test"},   arg_hint{"print str"})
+                 (&Self::hello, "hello", abbr{"H"}, desc{"hello test"},   arg_hint{"print str"}, visible{false})
                  (&Self::list,  "list" , abbr{"l"}, desc{"list test"},    arg_hint{"option list"})
                  (&Self::define, "Def" , abbr{"D"}, desc{"CMake Option"}, arg_hint{"cmake option"}))
     std::string hello;
