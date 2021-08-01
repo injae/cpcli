@@ -13,7 +13,7 @@ struct Build {
     bool help;
 
     void execute(cpcli::Command& cmd) {
-        auto t = serde::serialize<Build>(cmd);
+        auto t = serde::deserialize<Build>(cmd);
         if(t.help) { cmd.print_help(); exit(1); }
         for(auto& [key, data] : t.define) { fmt::print("{}:{}\n",key,data); }
         for(auto& data : t.list) { fmt::print("{}\n",data); }
@@ -30,7 +30,7 @@ struct Test {
     bool help;
     std::map<std::string, std::string> m;
     void execute(cpcli::Command& cmd) {
-        auto t = serde::serialize<Test>(cmd);
+        auto t = serde::deserialize<Test>(cmd);
         if(t.help) { cmd.print_help(); }
     }
 };

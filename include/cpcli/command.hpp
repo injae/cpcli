@@ -101,8 +101,8 @@ namespace cpcli
 
     template<typename T>
     Command parse(const std::string& cmd="") {
-        return cmd.empty() ? serde::deserialize<cpcli::Command>(T{})
-                           : serde::deserialize<cpcli::Command>(T{}).sub_command(cmd);
+        return cmd.empty() ? serde::serialize<cpcli::Command>(T{})
+                           : serde::serialize<cpcli::Command>(T{}).sub_command(cmd);
     }
 }
 

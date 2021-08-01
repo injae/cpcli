@@ -17,10 +17,10 @@ namespace serde {
 
     template<typename T> struct serde_adaptor<cpcli_t, T, type::struct_t> {
         static void from(cpcli_t& s, std::string_view key, T& data) {
-            serialize_to(s.sub_command(std::string{key}), data);
+            deserialize_to(s.sub_command(std::string{key}), data);
         }
         static void into(cpcli_t& s, std::string_view key, const T& data) {
-            auto cmd = deserialize<cpcli_t>(data);
+            auto cmd = serialize<cpcli_t>(data);
             cmd.name(key);
             s.add_command(cmd);
         }
