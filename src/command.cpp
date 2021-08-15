@@ -27,25 +27,26 @@ namespace cpcli
     std::string Option::help_str() {
         using namespace fmt::literals;
         if(!is_visible_)  return "";
-        auto arg_type = data_type != ARG_TYPE::NONE ? serde::to_string(data_type) : "";
+        auto arg_type = data_type != ARG_TYPE::NONE && arg_hint_.empty()
+            ? serde::to_string(data_type)
+            : arg_hint_.empty() ? "" : "<{}>"_format(arg_hint_);
         auto front = abbr_.empty() ? "{:<3}--{} {}"_format("",name_, arg_type)
-                                    :"{:<3}--{} [-{}] {}"_format("",name_, abbr_, arg_type);
-        auto end = arg_hint_.empty() ? ": {0}"_format(desc_)
-                                        : ": {0} {{{1}}}"_format(desc_, arg_hint_);
-        return "{:<35}{:<20}\n"_format(front, end);
+                                   : "{:<3}-{}, --{} {}"_format("",abbr_, name_, arg_type);
+        //auto end = arg_hint_.empty() ? " {0}"_format(desc_) : " {0} "_format(desc_);
+        return "{:<35} {:<20}\n"_format(front, desc_);
     }
 
     std::string Command::help_str() {
         using namespace fmt::literals;
         auto front = "{:<3}{}"_format("", name_);
-        auto end = ":{0}"_format(desc_);
+        auto end = " {0}"_format(desc_);
         return "{:<35}{:<20}\n"_format(front, end);
     }
 
     void Command::print_help() {
         fmt::print("Usage:\n");
-        auto has_cmd = commands_.empty() ? "" : " <command>";
-        auto has_opt = options_.empty() ? "" : " [--verbose]";
+        auto has_cmd = commands_.empty() ? "" : " [command]";
+        auto has_opt = options_.empty() ? "" : " [options]";
         if(name_ != "") fmt::print("   {}{}{}\n\n",name_, has_cmd, has_opt);
         if(!options_.empty()) {
             fmt::print("Option:\n");

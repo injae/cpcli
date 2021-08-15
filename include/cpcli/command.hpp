@@ -72,7 +72,7 @@ namespace cpcli
         Option& operator[](std::string_view option_name) { return options_[std::string{option_name}]; }
         Option& operator[](const char* option_name) { return options_[std::string{option_name}]; }
         Command& sub_command(const std::string& command) { return commands_[command]; }
-        inline void name(std::string_view name) { name_ = std::string{name};}
+        inline Command& name(std::string_view name) { name_ = std::string{name}; return *this; }
         inline Command& hook(Hook&& func) { hooks_.push_back(std::move(func)); return *this; }
         bool has_sub_command(const std::string& command) { return commands_.find(command) != commands_.end(); }
         bool has_option(const std::string& option) { return options_.find(option) != options_.end(); }
@@ -102,7 +102,7 @@ namespace cpcli
     template<typename T>
     Command parse(const std::string& cmd="") {
         return cmd.empty() ? serde::serialize<cpcli::Command>(T{})
-                           : serde::serialize<cpcli::Command>(T{}).sub_command(cmd);
+                           : serde::serialize<cpcli::Command>(T{}).name(cmd);
     }
 }
 

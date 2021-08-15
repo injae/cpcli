@@ -66,6 +66,7 @@ namespace cpcli::attribute {
                 }
                  else {
                     next_attr.into(ctx, data, key, remains..., desc{desc_});
+
                 }
             }
             else {
@@ -167,7 +168,10 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(!ctx.adaptor.has_sub_command(std::string{key})) {
+                if(key.empty()) {
+                    ctx.adaptor.hook(std::move(hook_));
+                }
+                else if(!ctx.adaptor.has_sub_command(std::string{key})) {
                     next_attr.into(ctx, data, key, remains..., hook{std::move(hook_)});
                 } 
                 else {
@@ -183,7 +187,8 @@ namespace cpcli::attribute {
         template<typename T, typename serde_ctx>
         inline void into(serde_ctx& ctx, T& data, std::string_view key) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor.sub_command(std::string{key}).hook(std::move(hook_));
+                if(key.empty()) { ctx.adaptor.hook(std::move(hook_)); }
+                else { ctx.adaptor.sub_command(std::string{key}).hook(std::move(hook_)); }
             }
         }
     };
@@ -203,7 +208,11 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(!ctx.adaptor.has_sub_command(std::string{key})) {
+                if(key.empty()) {
+                    ctx.adaptor.hook(std::move([hook=hook_,&data](auto& cmd){(data.*hook)(cmd);}));
+                    next_attr.into(ctx, data, key, remains...);
+                }
+                else if(!ctx.adaptor.has_sub_command(std::string{key})) {
                     next_attr.into(ctx, data, key, remains..., hook_mem{std::move(hook_)});
                 } 
                 else {
@@ -221,12 +230,42 @@ namespace cpcli::attribute {
         template<typename T, typename serde_ctx>
         inline void into(serde_ctx& ctx, T& data, std::string_view key) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor.sub_command(std::string{key}).hook(std::move([hook=hook_,&data](auto& cmd){
-                    (data.*hook)(cmd);
-                }));
+                if(key.empty()) {
+                    ctx.adaptor.hook(std::move([hook=hook_,&data](auto& cmd){(data.*hook)(cmd);}));
+                } else {
+                    ctx.adaptor.sub_command(std::string{key}).hook(std::move([hook=hook_,&data](auto& cmd){
+                        (data.*hook)(cmd);
+                    }));
+                }
             }
         }
     };
+
+    namespace detail {
+        struct help{
+            template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+            constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                        Next&& next_attr, Attributes&&... remains) const {
+                next_attr.from(ctx, data, key, remains...);
+            }
+
+            template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+            inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                             Next&& next_attr, Attributes&&... remains) const {
+                if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                    cpcli::Option opt = cpcli::Option("help").abbr("h").desc("Print usage information and exit.");
+                    ctx.adaptor.add_option(opt);
+                    ctx.adaptor.hook([](Command& cmd) {
+                        if(cmd["help"].get<bool>()){ cmd.print_help(); exit(1); }
+                    });
+                    next_attr.into(ctx, data, key, remains...);
+                } else {
+                    next_attr.into(ctx, data, key, remains...);
+                }
+            }
+        };
+    }
+    constexpr static auto help = detail::help{};
 }
 
 

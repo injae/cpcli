@@ -1,2 +1,0 @@
-/usr/bin/ar qc Debug/libcpcli.a CMakeFiles/cpcli.dir/src/command.cpp.o
-/usr/bin/ranlib Debug/libcpcli.a

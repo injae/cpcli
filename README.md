@@ -7,83 +7,65 @@ serdepp base command line parser
 
 using namespace cpcli::attribute;
 struct Build {
-    DERIVE_SERDE(Build,
-                 (&Self::help,  "help",  abbr{"h"}, desc{"help command"})
-                 (&Self::hello, "hello", abbr{"H"}, desc{"hello test"},   arg_hint{"print str"}, visible{false})
-                 (&Self::list,  "list" , abbr{"l"}, desc{"list test"},    arg_hint{"option list"})
-                 (&Self::define, "Def" , abbr{"D"}, desc{"CMake Option"}, arg_hint{"cmake option"}))
+    DERIVE_SERDE(Build, .attributes(help, hook(&Build::execute))
+                 [attributes(abbr{"H"}, desc{"hello test"}, arg_hint{"print str"}, visible{false})]
+                 (&Self::hello, "hello")
+                 [attributes(abbr{"l"}, desc{"list test"}, arg_hint{"path"})]
+                 (&Self::list,  "list")
+                 [attributes(abbr{"D"}, desc{"CMake Option"}, arg_hint{"cmake option"})]
+                 (&Self::define, "Def"))
     std::string hello;
     std::vector<std::string> list;
     std::map<std::string, bool> define;
-    bool help;
 
-    void execute(cpcli::Command& cmd) {
-        auto t = serde::deserialize<Build>(cmd);
-        if(t.help) { cmd.print_help(); exit(1); }
-        for(auto& [key, data] : t.define) { fmt::print("{}:{}\n",key,data); }
-        for(auto& data : t.list) { fmt::print("{}\n",data); }
-        for(auto& arg : cmd.args) { fmt::print("{},",arg); } fmt::print("\n");
+    static void execute(cpcli::Command& cmd) {
+        auto map = serde::deserialize<Build>(cmd);
+        for(auto& [key, data] : map.define) { fmt::print("{}:{}\n",key,data); }
+        for(auto& data : map.list) { fmt::print("{}\n",data); }
+        for(auto& arg : cmd.args) { fmt::print("{},",arg); };
     }
 };
 
 struct Test {
-    DERIVE_SERDE(Test,
-                 (&Self::build_, "build", desc{"build command"}, hook_mem(&Build::execute))
-                 (&Self::help,   "help",  abbr{"h"}, desc{"help command"})
-                 )
+    DERIVE_SERDE(Test, .attributes(help, hook(&Test::execute))
+                 [attributes(desc{"build command"})]
+                 (&Self::build_, "build"))
     Build build_;
-    bool help;
     std::map<std::string, std::string> m;
-    void execute(cpcli::Command& cmd) {
+
+    static void execute(cpcli::Command& cmd) {
         auto t = serde::deserialize<Test>(cmd);
-        if(t.help) { cmd.print_help(); }
     }
 };
 
-struct App {
-    DERIVE_SERDE(App, (&Self::test, "test",  hook_mem(&Test::execute)))
-    Test test;
-};
-
-
 int main(int argc, char *argv[])
 {
-    cpcli::parse<App>("test").parse(argc,argv);
+    cpcli::parse<Test>("test").parse(argc,argv);
     
     return 0;
 }
+
 ```
 ## Result
 ```console
-> ./test -h
+❯ test -h      
 Usage:
-   test <command> [--verbose]
+   test [command] [options]
 
 Option:
-   --help [-h]                     : help command      
+   -h, --help                       Print usage information and exit.
 
 Command:
-   build                           :build command      
+   build                            build command      
 
-❯ ./test build --help # sub command
+
+❯ test build -h
 Usage:
-   build [--verbose]
+   build [options]
 
 Option:
-   --Def [-D] MAP                  : CMake Option {cmake option}
-   --help [-h]                     : help command      
-   --list [-l] SEQUENCE            : list test {option list}
-
-
-❯ ./test build -DTEST=ON -DTEST2=OFF # map type args std::map<std::string, bool>
-TEST:true
-TEST2:false
-
-❯ ./test build -l=a -l=b  # list type args std::vector<std::string>
-a
-b
-
-❯ ./test build a b c # unregisted args
-a,b,c,
+   -D, --Def <cmake option>         CMake Option        
+   -h, --help                       Print usage information and exit.
+   -l, --list <path>                list test           
 ```
 

@@ -18,7 +18,7 @@
 
 
 [dependencies]
-    serdepp="git"
+    serdepp="0.1.1"
 
 [dev-dependencies]
     Catch2="2.9.1" 
