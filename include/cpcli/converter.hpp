@@ -25,10 +25,9 @@ namespace cpcli {
 
     template<typename T>
     constexpr ARG_TYPE find_arg_type() {
-        using namespace serde;
-        if constexpr(meta::is_str_v<T>) return ARG_TYPE::STRING;
-        else if constexpr (meta::is_sequenceable_v<T>) return ARG_TYPE::SEQUENCE;
-        else if constexpr (meta::is_mappable_v<T>) return ARG_TYPE::MAP;
+        if constexpr(serde::meta::is_str_v<T>) return ARG_TYPE::STRING;
+        else if constexpr (serde::meta::is_sequenceable_v<T>) return ARG_TYPE::SEQUENCE;
+        else if constexpr (serde::meta::is_mappable_v<T>) return ARG_TYPE::MAP;
         else if constexpr(std::is_same_v<int, T>) return ARG_TYPE::INTEGER;
         else if constexpr(std::is_same_v<bool, T>) return ARG_TYPE::BOOL;
         else if constexpr(std::is_same_v<float, T>) return ARG_TYPE::FLOAT;

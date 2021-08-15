@@ -100,6 +100,7 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+
                 if(ctx.adaptor.has_option(std::string{key})) {
                     ctx.adaptor[std::string{key}].arg_hint(std::string{arg_hint_}).template arg<T>();
                     next_attr.into(ctx, data, key, remains...);
