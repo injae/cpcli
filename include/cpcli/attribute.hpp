@@ -86,9 +86,9 @@ namespace cpcli::attribute {
             }
         }
     };
-    struct arg_hint{
-        arg_hint(std::string_view arg_hint) :arg_hint_(arg_hint) {};
-        std::string_view arg_hint_;
+    struct arg{
+        arg(std::string_view arg="") :arg_(arg) {};
+        std::string_view arg_;
 
         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
         constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
@@ -100,12 +100,11 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-
                 if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].arg_hint(std::string{arg_hint_}).template arg<T>();
+                    ctx.adaptor[std::string{key}].arg_hint(std::string{arg_}).template arg<T>();
                     next_attr.into(ctx, data, key, remains...);
                 } else {
-                    next_attr.into(ctx, data, key, remains..., arg_hint{arg_hint_});
+                    next_attr.into(ctx, data, key, remains..., arg{arg_});
                 }
             }
             else {
@@ -116,10 +115,12 @@ namespace cpcli::attribute {
         template<typename T, typename serde_ctx>
         inline void into(serde_ctx& ctx, T& data, std::string_view key) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor[std::string{key}].arg_hint(std::string{arg_hint_}).template arg<T>();
+                ctx.adaptor[std::string{key}].arg_hint(std::string{arg_}).template arg<T>();
             }
         }
     };
+
+    using arg_hint [[deprecated]] = arg;
 
     struct visible{
         visible(bool is_visible) :is_visible_(is_visible) {};

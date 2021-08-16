@@ -8,11 +8,11 @@ serdepp base command line parser
 using namespace cpcli::attribute;
 struct Build {
     DERIVE_SERDE(Build, .attributes(help, hook(&Build::execute))
-                 [attributes(abbr{"H"}, desc{"hello test"}, arg_hint{"print str"}, visible{false})]
+                 [attributes(abbr{"H"}, desc{"hello test"}, arg{"print str"}, visible{false})]
                  (&Self::hello, "hello")
-                 [attributes(abbr{"l"}, desc{"list test"}, arg_hint{"path"})]
+                 [attributes(abbr{"l"}, desc{"list test"}, arg{"path"})]
                  (&Self::list,  "list")
-                 [attributes(abbr{"D"}, desc{"CMake Option"}, arg_hint{"cmake option"})]
+                 [attributes(abbr{"D"}, desc{"CMake Option"}, arg{"cmake option"})]
                  (&Self::define, "Def"))
     std::string hello;
     std::vector<std::string> list;

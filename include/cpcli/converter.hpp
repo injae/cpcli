@@ -70,8 +70,8 @@ namespace cpcli {
         using namespace fmt::literals;
         std::string lower;
         std::transform(str.begin(), str.end(), lower.begin(), ::tolower);
-        if(str == "off" || str == "OFF" || str == "false" || str == "FALSE") return false;
-        else if(str == "on" || str == "ON" || str == "true" || str == "TRUE") return true;
+        if(str == "off" || str == "false") return false;
+        else if(str == "on"| str == "true") return true;
         else throw parse_error(fmt::format("str[{}] -> bool", str));
     }
 
