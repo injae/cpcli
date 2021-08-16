@@ -73,6 +73,7 @@ namespace cpcli
         Option& operator[](const char* option_name) { return options_[std::string{option_name}]; }
         Command& sub_command(const std::string& command) { return commands_[command]; }
         inline Command& name(std::string_view name) { name_ = std::string{name}; return *this; }
+        std::string get_name() { return name_; }
         inline Command& hook(Hook&& func) { hooks_.push_back(std::move(func)); return *this; }
         bool has_sub_command(const std::string& command) { return commands_.find(command) != commands_.end(); }
         bool has_option(const std::string& option) { return options_.find(option) != options_.end(); }
