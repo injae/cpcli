@@ -4,7 +4,7 @@ set(CPPM_VERSION 0.0.13)
 include(cmake/cppm_loader.cmake)
 cppm_project()
 
-project(cpcli VERSION 0.0.1 LANGUAGES C CXX)
+project(cpcli VERSION 0.0.2 LANGUAGES C CXX)
 cppm_setting()
 cppm_cxx_standard(17)
 cppm_compiler_option(DEFAULT)
