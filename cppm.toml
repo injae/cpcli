@@ -6,19 +6,24 @@
 [lib]
    name = "cpcli"
    type = "static"
-   source = ["src/.*.cpp"]
+   source = ["src/new_command.cpp"]
 
 [[example]]
     name = "test"
     source = ["example/example.cpp"]
 
-[[test]]
-    name = "parse test"
-    source = ["test/test.cpp"]
+[[example]]
+    name = "tt"
+    source = ["example/test.cpp"]
+
+#[[test]]
+#    name = "parse test"
+#    source = ["test/test.cpp"]
 
 
 [dependencies]
-    serdepp="0.1.1"
+    serdepp="git"
+    fmt="8.0.1"
 
 [dev-dependencies]
     Catch2="2.9.1" 

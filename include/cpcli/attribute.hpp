@@ -19,27 +19,29 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].abbr(std::string{abbr_});
-                    ctx.adaptor.update_option(std::string{key});
-                    next_attr.into(ctx, data, key, remains...);
-                } else {
-                    next_attr.into(ctx, data, key, remains..., abbr{abbr_});
-                }
+                ctx.adaptor.get_arg(std::string{key}).abbr(std::string{abbr_});
             }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
+            next_attr.into(ctx, data, key, remains...);
+        }
+    };
+
+    struct full{
+        full(std::string_view full="") :full_(full) {};
+        std::string_view full_;
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
         }
 
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor[std::string{key}].abbr(std::string{abbr_});
-                ctx.adaptor.update_option(std::string{key});
+                ctx.adaptor.get_arg(std::string{key}).full(std::string{full_.empty() ? key : full_});
             }
+            next_attr.into(ctx, data, key, remains...);
         }
-
     };
 
     struct desc{
@@ -56,39 +58,15 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].desc(std::string{desc_});
-                    next_attr.into(ctx, data, key, remains...);
-                }
-                else if (ctx.adaptor.has_sub_command(std::string{key})) {
-                    ctx.adaptor.sub_command(std::string{key}).desc(std::string{desc_});
-                    next_attr.into(ctx, data, key, remains...);
-                }
-                 else {
-                    next_attr.into(ctx, data, key, remains..., desc{desc_});
-
-                }
+                ctx.adaptor.get_arg(std::string{key}).desc(std::string{desc_});
             }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
-        }
-
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].desc(std::string{desc_});
-                }
-                else if (ctx.adaptor.has_sub_command(std::string{key})) {
-                    ctx.adaptor.sub_command(std::string{key}).desc(std::string{desc_});
-                }
-            }
+            next_attr.into(ctx, data, key, remains...);
         }
     };
-    struct arg{
-        arg(std::string_view arg="") :arg_(arg) {};
-        std::string_view arg_;
+
+    struct about{
+        about(std::string_view about) :about_(about) {};
+        std::string_view about_;
 
         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
         constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
@@ -100,27 +78,35 @@ namespace cpcli::attribute {
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].arg_hint(std::string{arg_}).template arg<T>();
-                    next_attr.into(ctx, data, key, remains...);
+                if(key.empty()) {
+                    ctx.adaptor.about(std::string{about_});
                 } else {
-                    next_attr.into(ctx, data, key, remains..., arg{arg_});
+                    ctx.adaptor.get_subcommand(std::string{key}).about(std::string{about_});
                 }
             }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
-        }
-
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor[std::string{key}].arg_hint(std::string{arg_}).template arg<T>();
-            }
+            next_attr.into(ctx, data, key, remains...);
         }
     };
 
-    using arg_hint [[deprecated]] = arg;
+    struct _value{
+        _value(std::string_view value="") :value_(value) {};
+        std::string_view value_;
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
+        }
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                ctx.adaptor.get_arg(std::string{key}).template value<T>();
+            }
+            next_attr.into(ctx, data, key, remains...);
+        }
+    };
 
     struct visible{
         visible(bool is_visible) :is_visible_(is_visible) {};
@@ -134,113 +120,33 @@ namespace cpcli::attribute {
 
         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
         inline void into(serde_ctx& ctx, T& data, std::string_view key,
+
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(ctx.adaptor.has_option(std::string{key})) {
-                    ctx.adaptor[std::string{key}].visible(is_visible_);
-                    next_attr.into(ctx, data, key, remains...);
-                } else {
-                    next_attr.into(ctx, data, key, remains..., visible(is_visible_));
-                }
+                ctx.adaptor.get_arg(std::string{key}).visible(is_visible_);
             }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
-        }
-
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                ctx.adaptor[std::string{key}].visible(is_visible_);
-            }
+            next_attr.into(ctx, data, key, remains...);
         }
     };
 
-    struct hook{
-        hook(Command::Hook&& hook) :hook_(std::move(hook)) {};
-        Command::Hook&& hook_;
+     struct hook{
+         hook(Command::Hook&& hook) :hook_(std::move(hook)) {};
+         Command::Hook&& hook_;
 
-        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
-        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
-                                    Next&& next_attr, Attributes&&... remains) {
-            next_attr.from(ctx, data, key, remains...);
-        }
+         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+         constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                     Next&& next_attr, Attributes&&... remains) {
+             next_attr.from(ctx, data, key, remains...);
+         }
 
-        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key,
-                                    Next&& next_attr, Attributes&&... remains) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(key.empty()) {
-                    ctx.adaptor.hook(std::move(hook_));
-                }
-                else if(!ctx.adaptor.has_sub_command(std::string{key})) {
-                    next_attr.into(ctx, data, key, remains..., hook{std::move(hook_)});
-                } 
-                else {
-                    ctx.adaptor.sub_command(std::string{key}).hook(std::move(hook_));
-                    next_attr.into(ctx, data, key, remains...);
-                }
-            }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
-        }
-
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(key.empty()) { ctx.adaptor.hook(std::move(hook_)); }
-                else { ctx.adaptor.sub_command(std::string{key}).hook(std::move(hook_)); }
-            }
-        }
-    };
-
-    template<typename Hook>
-    struct hook_mem{
-        hook_mem(Hook&& hook) :hook_(std::move(hook)) {};
-        Hook&& hook_;
-
-        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
-        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
-                                    Next&& next_attr, Attributes&&... remains) {
-            next_attr.from(ctx, data, key, remains...);
-        }
-
-        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key,
-                                    Next&& next_attr, Attributes&&... remains) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(key.empty()) {
-                    ctx.adaptor.hook(std::move([hook=hook_,&data](auto& cmd){(data.*hook)(cmd);}));
-                    next_attr.into(ctx, data, key, remains...);
-                }
-                else if(!ctx.adaptor.has_sub_command(std::string{key})) {
-                    next_attr.into(ctx, data, key, remains..., hook_mem{std::move(hook_)});
-                } 
-                else {
-                    ctx.adaptor.sub_command(std::string{key}).hook(std::move([hook=hook_,&data](auto& cmd){
-                        (data.*hook)(cmd);
-                    }));
-                    next_attr.into(ctx, data, key, remains...);
-                }
-            }
-            else {
-                next_attr.into(ctx, data, key, remains...);
-            }
-        }
-
-        template<typename T, typename serde_ctx>
-        inline void into(serde_ctx& ctx, T& data, std::string_view key) {
-            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                if(key.empty()) {
-                    ctx.adaptor.hook(std::move([hook=hook_,&data](auto& cmd){(data.*hook)(cmd);}));
-                } else {
-                    ctx.adaptor.sub_command(std::string{key}).hook(std::move([hook=hook_,&data](auto& cmd){
-                        (data.*hook)(cmd);
-                    }));
-                }
-            }
-        }
+         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+         inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                     Next&& next_attr, Attributes&&... remains) {
+             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                 ctx.adaptor.hook(std::move(hook_));
+             }
+             next_attr.into(ctx, data, key, remains...);
+         }
     };
 
     namespace detail {
@@ -255,15 +161,23 @@ namespace cpcli::attribute {
             inline void into(serde_ctx& ctx, T& data, std::string_view key,
                              Next&& next_attr, Attributes&&... remains) const {
                 if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
-                    cpcli::Option opt = cpcli::Option("help").abbr("h").desc("Print usage information and exit.");
-                    ctx.adaptor.add_option(opt);
-                    ctx.adaptor.hook([](Command& cmd) {
-                        if(cmd["help"].get<bool>()){ cmd.print_help(); exit(1); }
+                    ctx.adaptor.arg(cpcli::Arg("help")
+                                    .abbr("h")
+                                    .full("help")
+                                    .desc("Print usage information."));
+                    ctx.adaptor.hook([](auto& cmd){
+                        if(cmd["help"].visit()) {
+                            cmd.print_help();
+                            exit(1);
+                        }
+                        if(auto err = cmd.has_error(); err) {
+                            fmt::print(stderr, "err: {}\n", *err);
+                            cmd.print_help();
+                            exit(1);
+                        }
                     });
-                    next_attr.into(ctx, data, key, remains...);
-                } else {
-                    next_attr.into(ctx, data, key, remains...);
                 }
+                next_attr.into(ctx, data, key, remains...);
             }
         };
     }

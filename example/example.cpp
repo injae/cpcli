@@ -1,62 +1,64 @@
 #include "cpcli/cpcli.hpp"
+#include <serdepp/adaptor/nlohmann_json.hpp>
+#include <serdepp/adaptor/fmt.hpp>
+
+enum class O {
+    one, two, three
+};
 
 using namespace cpcli::attribute;
 struct Build {
-    DERIVE_SERDE(Build, .attributes(help, hook(&Build::execute))
-                 [attributes(abbr{"H"}, desc{"hello test"}, arg{"print str"}, visible{false})]
+    DERIVE_SERDE(Build, .attributes(help, hook(&Self::execute), about{"build command"})
+                 [attributes(abbr{"H"}, full{}, desc{"hello test"}, visible{false}, _value{})]
                  (&Self::hello, "hello")
-                 [attributes(abbr{"l"}, desc{"list test"}, arg{"path"})]
+                 [attributes(abbr{"l"}, full{}, desc{"list test"}, _value{})]
                  (&Self::list,  "list")
-                 [attributes(abbr{"D"}, desc{"CMake Option"}, arg{"cmake option"})]
-                 (&Self::define, "Def")
-                 [attributes(abbr{"d"}, desc{"CMake Option"}, arg{"cmake option"})]
-                 (&Self::DD, "def")
+                 [attributes(abbr{"i"}, full{}, desc{"list test"}, _value{})]
+                 (&Self::ilist,  "ilist")
+                 [attributes(abbr{"D"}, full{"Def"}, desc{"CMake Option"}, _value{})]
+                 (&Self::define, "define")
+                 [attributes(abbr{"d"}, full{"def"}, desc{"CMake Option"}, _value{})]
+                 (&Self::DD, "DD")
+                 [attributes(abbr{"o"}, full{}, desc("or not"), _value{})]
+                 (&Self::oo, "oo")
                  )
     std::string hello;
     std::vector<std::string> list;
+    std::vector<int> ilist;
     std::map<std::string, bool> define;
     std::map<std::string, std::string> DD;
+    O oo;
 
     static void execute(cpcli::Command& cmd) {
         auto map = serde::deserialize<Build>(cmd);
-        for(auto& [key, data] : map.define) { fmt::print("{}:{}\n",key,data); }
-        for(auto& [key, data] : map.DD) { fmt::print("{}:{}\n",key,data); }
-        for(auto& data : map.list) { fmt::print("{}\n",data); }
-        for(auto& arg : cmd.args) { fmt::print("{},",arg); };
     }
 };
 
 struct __test {
-    DERIVE_SERDE(__test, .attributes(help))
+    DERIVE_SERDE(__test, .attributes(help, hook(&Self::execute), about{"test command"}))
     static void execute(cpcli::Command& cmd) {
-        fmt::print("hllo\n");
+        auto map = serde::deserialize<__test>(cmd);
+        fmt::print("{}\n", map);
     }
 };
 
 struct Test {
-    DERIVE_SERDE(Test, .attributes(help, hook(&Test::execute))
-                 [attributes(desc{"build command"})]
+    DERIVE_SERDE(Test, .attributes(help, hook(&Self::execute), about{"cpcli test command"})
                  (&Self::build_, "build")
-                 [attributes(desc{"test command"},hook(&Test::ttt))]
                  (&Self::test, "test"))
     Build build_;
     std::map<std::string, std::string> m;
     __test test;
 
-    static void execute(cpcli::Command& cmd) {
-        auto t = serde::deserialize<Test>(cmd);
-        fmt::print("hello\n");
-    }
-
-    static void ttt(cpcli::Command& cmd) {
-        fmt::print("{}\n",cmd.args);
+    static void execute(cpcli::Command &cmd) {
+        auto map = serde::deserialize<Test>(cmd);
+        fmt::print("{}\n",map);
     }
 };
 
 int main(int argc, char *argv[])
 {
-    auto test = cpcli::parse<Test>("test");
-    test.parse(argc,argv);
+    cpcli::parse_with_exec<Test>(argc, argv);
     
     return 0;
 }

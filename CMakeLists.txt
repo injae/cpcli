@@ -9,7 +9,8 @@ cppm_setting()
 cppm_cxx_standard(17)
 cppm_compiler_option(DEFAULT)
 
-find_cppkg(serdepp 0.1.1  MODULE serdepp::serdepp TYPE lib)
+find_cppkg(fmt 8.0.1  MODULE fmt::fmt-header-only TYPE lib)
+find_cppkg(serdepp git  MODULE serdepp::serdepp TYPE lib)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 find_cppkg(nlohmann_json 3.9.1  MODULE nlohmann_json::nlohmann_json TYPE lib)
@@ -19,7 +20,7 @@ endif()
 
 cppm_target_define(cpcli STATIC
 SOURCES
-    src/command.cpp
+    src/new_command.cpp
 )
 
 cppm_examples_area()
@@ -30,10 +31,15 @@ SOURCES
     example/example.cpp
 )
 
+cppm_target_define(tt BINARY
+SOURCES
+    example/test.cpp
+)
+
 endif()
 
 
-set(cpcli_global_deps PRIVATE serdepp)
+set(cpcli_global_deps PRIVATE fmt serdepp)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
    list(APPEND cpcli_global_deps PRIVATE nlohmann_json Catch2)
 endif()
@@ -44,7 +50,12 @@ cppm_target_dependencies(test
    ${cpcli_global_deps}
    cpcli)
 
+cppm_target_dependencies(tt
+   ${cpcli_global_deps}
+   cpcli)
+
 
 cppm_target_install(cpcli)
 cppm_target_install(test)
+cppm_target_install(tt)
 
