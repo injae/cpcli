@@ -10,7 +10,6 @@
 #include <map>
 #include <filesystem>
 #include "cpcli/converter.hpp"
-#include <serdepp/adaptor/nlohmann_json.hpp>
 
 namespace cpcli {
     template<class Container, typename T>
