@@ -6,7 +6,7 @@
 [lib]
    name = "cpcli"
    type = "static"
-   source = ["src/new_command.cpp"]
+   source = ["src/command.cpp"]
 
 [[example]]
     name = "test"

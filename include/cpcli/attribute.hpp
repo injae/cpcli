@@ -6,6 +6,38 @@
 #include "cpcli/cpcli.hpp"
 
 namespace cpcli::attribute {
+    struct flags {
+        flags(std::string_view query) :flags_(query) {};
+        std::string_view flags_;
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
+        }
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                if(auto sep = flags_.find('/'); sep != std::string_view::npos) {
+                    auto _abbr = flags_.substr(0, sep);
+                    auto _full = flags_.substr(sep+1);
+                    ctx.adaptor.get_arg(std::string{key}).abbr(std::string{_abbr});
+                    ctx.adaptor.get_arg(std::string{key}).full(std::string{_full});
+                } else {
+                    if(flags_.size() >= 2) {
+                        ctx.adaptor.get_arg(std::string{key}).full(std::string{flags_});
+                    } else {
+                        ctx.adaptor.get_arg(std::string{key}).abbr(std::string{flags_});
+                    }
+                }
+            }
+            next_attr.into(ctx, data, key, remains...);
+        }
+
+    };
+
+
     struct abbr{
         abbr(std::string_view abbr) :abbr_(abbr) {};
         std::string_view abbr_;
@@ -39,6 +71,25 @@ namespace cpcli::attribute {
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
                 ctx.adaptor.get_arg(std::string{key}).full(std::string{full_.empty() ? key : full_});
+            }
+            next_attr.into(ctx, data, key, remains...);
+        }
+    };
+
+    struct index{
+        index(size_t idx) :index_(idx) {};
+        size_t index_;
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
+        }
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                ctx.adaptor.get_arg(std::string{key}).index(index_);
             }
             next_attr.into(ctx, data, key, remains...);
         }

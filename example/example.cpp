@@ -9,17 +9,17 @@ enum class O {
 using namespace cpcli::attribute;
 struct Build {
     DERIVE_SERDE(Build, .attributes(help, hook(&Self::execute), about{"build command"})
-                 [attributes(abbr{"H"}, full{}, desc{"hello test"}, visible{false}, _value{})]
+                 [attributes(flags{"H/hello"}, desc{"hello test"}, visible{false}, _value{})]
                  (&Self::hello, "hello")
-                 [attributes(abbr{"l"}, full{}, desc{"list test"}, _value{})]
+                 [attributes(flags{"l/list"}, desc{"list test"}, _value{})]
                  (&Self::list,  "list")
-                 [attributes(abbr{"i"}, full{}, desc{"list test"}, _value{})]
+                 [attributes(flags{"i/ilist"}, desc{"int list test"}, _value{})]
                  (&Self::ilist,  "ilist")
-                 [attributes(abbr{"D"}, full{"Def"}, desc{"CMake Option"}, _value{})]
+                 [attributes(flags{"d"}, desc{"CMake Option"}, _value{})]
                  (&Self::define, "define")
-                 [attributes(abbr{"d"}, full{"def"}, desc{"CMake Option"}, _value{})]
+                 [attributes(flags{"D/Def"}, desc{"CMake Option"}, _value{})]
                  (&Self::DD, "DD")
-                 [attributes(abbr{"o"}, full{}, desc("or not"), _value{})]
+                 [attributes(flags{"oo"}, desc("or not"), _value{})]
                  (&Self::oo, "oo")
                  )
     std::string hello;
@@ -31,6 +31,7 @@ struct Build {
 
     static void execute(cpcli::Command& cmd) {
         auto map = serde::deserialize<Build>(cmd);
+        fmt::print("{}\n",map);
     }
 };
 
