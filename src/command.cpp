@@ -97,8 +97,10 @@ namespace cpcli {
             for(auto& [key, cmd] : commands_) { fmt::print("{}", cmd.help_str()); }
             if(positional_arg_size != 0) {
                 auto& pos_arg = args_[arg_mapper["1"]];
-                auto pos_cmd = fmt::format("{:<3}{}","", fmt::join(pos_arg.possible_values_, "|"));
-                fmt::print("{:<35}{:<20}\n", pos_cmd, pos_arg.desc_);
+                if(!pos_arg.possible_values_.empty()) {
+                    auto pos_cmd = fmt::format("{:<3}{}","", fmt::join(pos_arg.possible_values_, "|"));
+                    fmt::print("{:<35}{:<20}\n", pos_cmd, pos_arg.desc_);
+                }
             }
             fmt::print("\n");
         }
