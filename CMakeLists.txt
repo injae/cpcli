@@ -36,6 +36,11 @@ SOURCES
     example/test.cpp
 )
 
+cppm_target_define(parse BINARY
+SOURCES
+    example/parser.cpp
+)
+
 endif()
 
 
@@ -54,8 +59,13 @@ cppm_target_dependencies(tt
    ${cpcli_global_deps}
    cpcli)
 
+cppm_target_dependencies(parse
+   ${cpcli_global_deps}
+   cpcli)
+
 
 cppm_target_install(cpcli)
 cppm_target_install(test)
 cppm_target_install(tt)
+cppm_target_install(parse)
 

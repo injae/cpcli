@@ -21,12 +21,18 @@ struct Build {
                  (&Self::DD, "DD")
                  [attributes(flags{"oo"}, desc("or not"), _value{})]
                  (&Self::oo, "oo")
+                 [attributes(_index(1), desc("install commands"), possible_values{"install","uninstall"})]
+                 (&Self::make_opt, "install_util")
+                 [attributes(_index(2), desc("config"),  _value{})]
+                 (&Self::make_opt2, "install_util_config")
                  )
     std::string hello;
     std::vector<std::string> list;
     std::vector<int> ilist;
     std::map<std::string, bool> define;
     std::map<std::string, std::string> DD;
+    std::string make_opt;
+    std::vector<std::string> make_opt2;
     O oo;
 
     static void execute(cpcli::Command& cmd) {
@@ -36,11 +42,15 @@ struct Build {
 };
 
 struct __test {
-    DERIVE_SERDE(__test, .attributes(help, hook(&Self::execute), about{"test command"}))
+    DERIVE_SERDE(__test, .attributes(help, hook(&Self::execute), about{"test command"})
+                 [attributes(_index(1), desc("remain"), _value{})]
+                 (&Self::remain, "remain")
+                 )
     static void execute(cpcli::Command& cmd) {
         auto map = serde::deserialize<__test>(cmd);
-        fmt::print("{}\n", map);
+        fmt::print("{}\n", map.remain);
     }
+    std::vector<std::string> remain;
 };
 
 struct Test {

@@ -15,21 +15,34 @@ namespace cpcli {
     template<class Container, typename T>
     bool contains(Container& con, T key) { return con.find(key) != con.end(); }
 
-    class cli_parser {
+    class cli_parser_interface {
     public:
-        DERIVE_SERDE(cli_parser, (&Self::name_, "name")(&Self::opts_, "opts")(&Self::unparsed_args, "unparsed"))
-        cli_parser() = default;
-        cli_parser(const cli_parser& o) = default;
-        cli_parser(const std::deque<std::string>& args) : unparsed_args(args) {}
-        cli_parser(int argc, char* argv[])  {
+        DERIVE_SERDE(cli_parser_interface,
+                     (&Self::name_, "name")(&Self::opts_, "opts")(&Self::unparsed_args, "unparsed"))
+        cli_parser_interface() = default;
+        cli_parser_interface(const cli_parser_interface& o) = default;
+        cli_parser_interface(const std::deque<std::string>& args) : unparsed_args(args) {}
+        cli_parser_interface(int argc, char* argv[])  {
             for(int i = 0; i < argc; ++i) { unparsed_args.emplace_back(argv[i]); }  
         }
-        cli_parser& clear();
-        void parse();
+        virtual void parse() = 0;
+        void clear() {
+            name_.clear();
+            opts_.clear();
+        }
         std::deque<std::string>& remains() { return unparsed_args; }
+        virtual ~cli_parser_interface() {};
         std::deque<std::string> unparsed_args;
         std::string name_;
         std::map<std::string, std::string> opts_;
+    };
+
+    class cli_parser : public cli_parser_interface {
+    public:
+        using cli_parser_interface::cli_parser_interface;
+        using cli_parser_interface::serde;
+        //DERIVE_SERDE(cli_parser, (&Self::name_, "name")(&Self::opts_, "opts")(&Self::unparsed_args, "unparsed"))
+        void parse();
     };
 
     class Command;
@@ -49,6 +62,10 @@ namespace cpcli {
         inline Arg&& visible(bool is_visible) { is_visible_ = is_visible; return std::move(*this); }
         inline Arg&& require(bool is_require) { require_ = is_require; return std::move(*this); }
         inline Arg&& index(size_t index) { index_ = index; return std::move(*this); }
+        inline Arg&& possible_values(std::set<std::string>&& values) {
+            possible_values_ = std::move(values);
+            return std::move(*this);
+        }
         template<class T>
         inline Arg&& value() {
             if constexpr(serde::is_enumable_v<T>) {
@@ -80,6 +97,7 @@ namespace cpcli {
         std::string full_;
         std::string desc_;
         std::string data_;
+        std::set<std::string> possible_values_;
         std::string arg_hint_="NONE";
         size_t index_ = 0;
         bool require_ = false;
@@ -98,6 +116,8 @@ namespace cpcli {
                      (&Self::index_, "index")
                      [attributes(make_optional)]
                      (&Self::arg_hint_, "arg-hint")
+                     [attributes(make_optional)]
+                     (&Self::possible_values_, "possible-values")
                      (&Self::require_, "requrie")
                      (&Self::is_visible_, "visible"))
     };
@@ -110,7 +130,7 @@ namespace cpcli {
         Command(const Command& o)=default;
         Command(const std::string& name) : name_(name) {}
 
-        Command& parse(cli_parser& parser);
+        Command& parse(cli_parser_interface& parser);
         Command&& arg(Arg&& arg);
         Command&& name(const std::string& name) { name_ = name; return std::move(*this); }
         Command&& about(const std::string& desc) { desc_ = desc;  return std::move(*this); }
@@ -125,7 +145,12 @@ namespace cpcli {
 
         Arg& operator[](std::string_view name) { return args_.at(arg_mapper.at(std::string{name})); }
         Command& get_subcommand(std::string_view name) { return commands_[std::string{name}]; }
-        Arg& get_arg(std::string_view name) { return args_[std::string{name}]; }
+        Command& build();
+        Arg& get_arg(std::string_view name) {
+            auto skey= std::string{name};
+            if(!contains(args_, skey)) { args_.emplace(skey, cpcli::Arg(skey)); }
+            return args_[skey];
+        }
         bool has_sub_command(std::string_view name) { return contains(commands_, std::string{name}); }
         bool has_arg(std::string_view name) {return contains(args_, std::string{name});}
         bool is_visit() { return visit_;}
@@ -155,13 +180,15 @@ namespace cpcli {
                      (&Self::visit_, "visit")
                      (&Self::arg_mapper, "mapper")
                      (&Self::commands_, "commands")
-                     (&Self::positional_arg_size, "pargs_size"))
+                     (&Self::positional_arg_size, "pargs_size")
+                     (&Self::require_count, "require-count")
+                     )
     };
 
     template<typename T>
     Command parse(const std::string& cmd="") {
-        return cmd.empty() ? serde::serialize<cpcli::Command>(T{})
-                           : serde::serialize<cpcli::Command>(T{}).name(cmd);
+        return cmd.empty() ? serde::serialize<cpcli::Command>(T{}).build()
+                           : serde::serialize<cpcli::Command>(T{}).name(cmd).build();
     }
 
     template<typename T>

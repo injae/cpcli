@@ -76,8 +76,8 @@ namespace cpcli::attribute {
         }
     };
 
-    struct index{
-        index(size_t idx) :index_(idx) {};
+    struct _index{
+        _index(size_t idx) :index_(idx) {};
         size_t index_;
         template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
         constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
@@ -90,6 +90,26 @@ namespace cpcli::attribute {
                                     Next&& next_attr, Attributes&&... remains) {
             if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
                 ctx.adaptor.get_arg(std::string{key}).index(index_);
+            }
+            next_attr.into(ctx, data, key, remains...);
+        }
+    };
+
+    struct possible_values{
+        possible_values(std::initializer_list<std::string> values) : values_(values) {};
+        possible_values(std::set<std::string> values) : values_(std::move(values)) {};
+        std::set<std::string> values_;
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        constexpr inline void from(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            next_attr.from(ctx, data, key, remains...);
+        }
+
+        template<typename T, typename serde_ctx, typename Next, typename ...Attributes>
+        inline void into(serde_ctx& ctx, T& data, std::string_view key,
+                                    Next&& next_attr, Attributes&&... remains) {
+            if constexpr(std::is_same_v<typename serde_ctx::Adaptor, cpcli::Command>) {
+                ctx.adaptor.get_arg(std::string{key}).possible_values(std::move(values_));
             }
             next_attr.into(ctx, data, key, remains...);
         }

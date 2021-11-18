@@ -16,6 +16,10 @@
     name = "tt"
     source = ["example/test.cpp"]
 
+[[example]]
+    name = "parse"
+    source = ["example/parser.cpp"]
+
 #[[test]]
 #    name = "parse test"
 #    source = ["test/test.cpp"]

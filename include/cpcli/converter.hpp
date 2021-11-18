@@ -61,7 +61,7 @@ namespace cpcli {
         auto cpcli_enum_hint_list() {
             using namespace fmt::literals;
             constexpr auto& enum_list = magic_enum::enum_names<typename detail::cpcli_enum_helper<T>::value>();
-            return fmt::format("{}", fmt::join(enum_list, " | "));
+            return fmt::format("={}", fmt::join(enum_list, " | "));
         }
     }
 
