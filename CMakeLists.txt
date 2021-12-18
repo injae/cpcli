@@ -10,7 +10,7 @@ cppm_cxx_standard(17)
 cppm_compiler_option(DEFAULT)
 
 find_cppkg(fmt 8.0.1  MODULE fmt::fmt-header-only TYPE lib)
-find_cppkg(serdepp git  MODULE serdepp::serdepp TYPE lib)
+find_cppkg(serdepp 0.1.3  MODULE serdepp::serdepp TYPE lib)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 find_cppkg(nlohmann_json 3.9.1  MODULE nlohmann_json::nlohmann_json TYPE lib)

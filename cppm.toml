@@ -26,7 +26,7 @@
 
 
 [dependencies]
-    serdepp="git"
+    serdepp="0.1.3"
     fmt="8.0.1"
 
 [dev-dependencies]
